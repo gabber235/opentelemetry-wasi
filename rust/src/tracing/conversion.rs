@@ -1,3 +1,4 @@
+use crate::types::{span_id_string, trace_id_string};
 use crate::wit::wasi::otel::tracing::*;
 
 impl From<opentelemetry_sdk::trace::SpanData> for SpanData {
@@ -24,8 +25,8 @@ impl From<opentelemetry_sdk::trace::SpanData> for SpanData {
 impl From<opentelemetry::trace::SpanContext> for SpanContext {
     fn from(value: opentelemetry::trace::SpanContext) -> Self {
         Self {
-            trace_id: format!("{:x}", value.trace_id()),
-            span_id: format!("{:x}", value.span_id()),
+            trace_id: trace_id_string(value.trace_id()),
+            span_id: span_id_string(value.span_id()),
             trace_flags: value.trace_flags().into(),
             is_remote: value.is_remote(),
             trace_state: value

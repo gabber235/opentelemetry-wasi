@@ -1,4 +1,8 @@
-use crate::{serialize_seq, types::to_json, wit::wasi::otel::logs::*};
+use crate::{
+    serialize_seq,
+    types::{span_id_string, to_json, trace_id_string},
+    wit::wasi::otel::logs::*,
+};
 use base64::Engine;
 use serde::{
     ser::{SerializeMap, SerializeSeq},
@@ -15,8 +19,8 @@ pub fn to_wasi_log_record(
         .as_ref()
         .map(|tc| {
             (
-                format!("{:x}", tc.trace_id).into(),
-                format!("{:x}", tc.span_id).into(),
+                trace_id_string(tc.trace_id).into(),
+                span_id_string(tc.span_id).into(),
                 tc.trace_flags.map(Into::into),
             )
         })

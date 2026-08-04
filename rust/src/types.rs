@@ -5,6 +5,14 @@ use crate::wit::wasi::{
 use serde::{ser::SerializeSeq, Serialize};
 use std::time::UNIX_EPOCH;
 
+pub(crate) fn trace_id_string(value: opentelemetry::trace::TraceId) -> String {
+    value.to_string()
+}
+
+pub(crate) fn span_id_string(value: opentelemetry::trace::SpanId) -> String {
+    value.to_string()
+}
+
 /// Converts a Serde-serializable type to JSON.
 pub fn to_json<T: Serialize>(v: &T) -> String {
     serde_json::to_string(v).unwrap_or_else(|e| {
@@ -157,5 +165,21 @@ mod tests {
             "[\"Hello, world!\",\"Goodnight, moon.\"]",
             otel_value_to_serde_string!(str_arr)
         );
+    }
+
+    #[test]
+    fn trace_identifiers_preserve_leading_zeroes() {
+        let trace_id = opentelemetry::trace::TraceId::from_bytes([
+            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
+        ]);
+        let span_id = opentelemetry::trace::SpanId::from_bytes([0, 1, 2, 3, 4, 5, 6, 7]);
+
+        assert_eq!(
+            trace_id_string(trace_id),
+            "000102030405060708090a0b0c0d0e0f"
+        );
+        assert_eq!(span_id_string(span_id), "0001020304050607");
+        assert_eq!(trace_id_string(trace_id).len(), 32);
+        assert_eq!(span_id_string(span_id).len(), 16);
     }
 }
