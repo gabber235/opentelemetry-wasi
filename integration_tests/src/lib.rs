@@ -169,15 +169,15 @@ mod tests {
 
 
                 "[].trace_id" => insta::dynamic_redaction(|value, _path| {
-                    assert2::let_assert!(Some(trace_id) = value.as_str());
+                    assert2::assert!(let Some(trace_id) = value.as_str());
                     format!("[trace_id:len({})]", trace_id.len())
                 }),
                 "[].span_id" => insta::dynamic_redaction(|value, _path| {
-                    assert2::let_assert!(Some(span_id) = value.as_str());
+                    assert2::assert!(let Some(span_id) = value.as_str());
                     format!("[span_id:len({})]", span_id.len())
                 }),
                 "[].parent_span_id" => insta::dynamic_redaction(|value, _path| {
-                    assert2::let_assert!(Some(span_id) = value.as_str());
+                    assert2::assert!(let Some(span_id) = value.as_str());
                     format!("[parent_span_id:len({})]", span_id.len())
                 }),
             });
@@ -194,11 +194,11 @@ mod tests {
             insta::assert_yaml_snapshot!(format!("{}_logs", prefix), log_data, {
                 "[].observed_time_unix_nano" => "[timestamp]",
                 "[].trace_id" => insta::dynamic_redaction(|value, _path| {
-                    assert2::let_assert!(Some(trace_id) = value.as_str());
+                    assert2::assert!(let Some(trace_id) = value.as_str());
                     format!("[trace_id:len({})]", trace_id.len())
                 }),
                 "[].span_id" => insta::dynamic_redaction(|value, _path| {
-                    assert2::let_assert!(Some(span_id) = value.as_str());
+                    assert2::assert!(let Some(span_id) = value.as_str());
                     format!("[span_id:len({})]", span_id.len())
                 }),
             });
